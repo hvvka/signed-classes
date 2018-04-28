@@ -1,0 +1,15 @@
+group 'com.hania'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.slf4j', name:'slf4j-api', version: '1.7.25'
+    compile group: 'org.slf4j', name:'slf4j-simple', version: '1.7.25'
+}
