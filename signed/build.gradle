@@ -13,7 +13,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
-task helloJar(type: Jar) {
+task createJar(type: Jar) {
     manifest {
         attributes 'Implementation-Title': rootProject.name,
                 'Implementation-Version': version,
@@ -22,4 +22,11 @@ task helloJar(type: Jar) {
     baseName = project.name
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
+}
+
+task copyJarToDirectory(type: Copy) {
+    copy {
+        from createJar
+        into "../jar"
+    }
 }

@@ -1,0 +1,7 @@
+/* AUTOMATICALLY GENERATED ON Sun Apr 29 22:23:12 CEST 2018*/
+/* DO NOT EDIT */
+
+grant codeBase "file:/Users/hg/pwr/6sem/pwjjtz/lab-culer/lab7/jar/" {
+  permission java.security.AllPermission;
+};
+

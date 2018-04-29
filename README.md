@@ -7,7 +7,7 @@
 $ keytool -genkey -alias hello -keyalg RSA -keysize 2048 -keystore hello-keystore -validity 660
 ```
 
-Everything after alias is optional. Default keystore is `.keystore` file in home directory and dafault validity is 90 days.
+Everything after alias is optional. Default keystore is `.keystore` file in home directory and default validity is 90 days.
 
 The information for signing jar can be sent to stdout with:
 ```
@@ -16,6 +16,7 @@ $ keytool -genkey -alias hello -keystore hello-keystore < keystore.conf
 
 ### Sign a jar
 ```
+$ cd signed && gradle copyJarToDirectory && cd ../jar
 $ jarsigner -keystore ~/hello-keystore -storepass hania123 -keypass hania123 signed-1.0-SNAPSHOT.jar hello 
 ```
 

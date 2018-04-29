@@ -23,6 +23,7 @@ import java.util.jar.JarInputStream;
 public class JarLoader extends SecureClassLoader {
 
     private static final Logger LOG = LoggerFactory.getLogger(JarLoader.class);
+
     private static int groupNum = 0;
     private URL urlBase;
     private boolean printLoadMessages = true;
@@ -30,67 +31,67 @@ public class JarLoader extends SecureClassLoader {
     private Hashtable<String, Certificate[]> classIds;
     private ThreadGroup threadGroup;
 
-    public JarLoader(String base, ClassLoader parent) {
-        super(parent);
+    public JarLoader(String base) {
+        super();
         try {
             if (!(base.endsWith("/")))
                 base = base + "/";
             urlBase = new URL(base);
             classArrays = new Hashtable<>();
             classIds = new Hashtable<>();
-        } catch (Exception e) {
-            throw new IllegalArgumentException(base);
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(base, e);
         }
     }
 
-    private byte[] getClassBytes(InputStream is) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        BufferedInputStream bis = new BufferedInputStream(is);
+    private byte[] getClassBytes(InputStream inputStream) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
         boolean eof = false;
         while (!eof) {
             try {
-                int i = bis.read();
+                int i = bufferedInputStream.read();
                 if (i == -1)
                     eof = true;
-                else baos.write(i);
+                else byteArrayOutputStream.write(i);
             } catch (IOException e) {
                 return new byte[0];
             }
         }
-        return baos.toByteArray();
+        return byteArrayOutputStream.toByteArray();
     }
 
     @Override
     protected Class findClass(String name) {
         String urlName = name.replace('.', '/');
         byte[] buf;
-        Class cl;
+        Class clazz;
 
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
+        SecurityManager securityManager = System.getSecurityManager();
+        if (securityManager != null) {
             int i = name.lastIndexOf('.');
             if (i >= 0)
-                sm.checkPackageDefinition(name.substring(0, i));
+                securityManager.checkPackageDefinition(name.substring(0, i));
         }
 
         buf = classArrays.get(urlName);
         if (buf != null) {
-            Certificate[] ids = classIds.get(urlName);
-            CodeSource cs = new CodeSource(urlBase, ids);
-            cl = defineClass(name, buf, 0, buf.length, cs);
-            return cl;
+            Certificate[] certificates = classIds.get(urlName);
+            CodeSource codeSource = new CodeSource(urlBase, certificates);
+            clazz = defineClass(name, buf, 0, buf.length, codeSource);
+            return clazz;
         }
 
         try {
             URL url = new URL(urlBase, urlName + ".class");
             if (printLoadMessages)
                 LOG.info("Loading {}", url);
-            InputStream is = url.openConnection().getInputStream();
-            buf = getClassBytes(is);
-            CodeSource cs = new CodeSource(urlBase, (CodeSigner[]) null);
-            cl = defineClass(name, buf, 0, buf.length, cs);
-            return cl;
-        } catch (Exception e) {
+            InputStream inputStream = url.openConnection().getInputStream();
+            buf = getClassBytes(inputStream);
+            CodeSource codeSource = new CodeSource(urlBase, (CodeSigner[]) null);
+            clazz = defineClass(name, buf, 0, buf.length, codeSource);
+            return clazz;
+        } catch (IOException e) {
             LOG.error("Can't load {}", name, e);
             return null;
         }
@@ -98,8 +99,8 @@ public class JarLoader extends SecureClassLoader {
 
     public void readJarFile(String name) {
         URL jarUrl;
-        JarInputStream jis;
-        JarEntry je;
+        JarInputStream jarInputStream;
+        JarEntry jarEntry;
 
         try {
             jarUrl = new URL(urlBase, name);
@@ -108,54 +109,52 @@ public class JarLoader extends SecureClassLoader {
             return;
         }
         if (printLoadMessages)
-            LOG.error("Loading jar file {}", jarUrl);
+            LOG.info("Loading jar file {}", jarUrl);
 
         try {
-            jis = new JarInputStream(
-                    jarUrl.openConnection().getInputStream());
-        } catch (IOException ioe) {
-            LOG.info("Can't open jar file {}", jarUrl);
+            jarInputStream = new JarInputStream(jarUrl.openConnection().getInputStream());
+        } catch (IOException e) {
+            LOG.error("Can't open jar file {}", jarUrl);
             return;
         }
 
         try {
-            while ((je = jis.getNextJarEntry()) != null) {
-                String jarName = je.getName();
+            while ((jarEntry = jarInputStream.getNextJarEntry()) != null) {
+                String jarName = jarEntry.getName();
                 if (jarName.endsWith(".class"))
-                    loadClassBytes(jis, jarName, je);
+                    loadClassBytes(jarInputStream, jarName, jarEntry);
                 // else ignore it; it could be an image or audio file
-                jis.closeEntry();
+                jarInputStream.closeEntry();
             }
-        } catch (IOException ioe) {
+        } catch (IOException e) {
             LOG.error("Badly formatted jar file");
         }
     }
 
-    private void loadClassBytes(JarInputStream jis,
-                                String jarName, JarEntry je) {
+    private void loadClassBytes(JarInputStream jarInputStream, String jarName, JarEntry jarEntry) {
         if (printLoadMessages)
-            LOG.info("\t{}", jarName);
-        BufferedInputStream jarBuf = new BufferedInputStream(jis);
-        ByteArrayOutputStream jarOut = new ByteArrayOutputStream();
+            LOG.info("Loading byte from: {}", jarName);
+        BufferedInputStream jarBuffered = new BufferedInputStream(jarInputStream);
+        ByteArrayOutputStream jarOutput = new ByteArrayOutputStream();
         int b;
         try {
-            while ((b = jarBuf.read()) != -1)
-                jarOut.write(b);
+            while ((b = jarBuffered.read()) != -1)
+                jarOutput.write(b);
             String className = jarName.substring(0, jarName.length() - 6);
-            classArrays.put(className, jarOut.toByteArray());
-            Certificate[] c = je.getCertificates();
+            classArrays.put(className, jarOutput.toByteArray());
+            Certificate[] c = jarEntry.getCertificates();
             if (c == null)
                 c = new Certificate[0];
             classIds.put(className, c);
-        } catch (IOException ioe) {
-            LOG.error("Error reading entry {}", jarName);
+        } catch (IOException e) {
+            LOG.error("Error reading entry: {}", jarName);
         }
     }
 
     public void checkPackageAccess(String name) {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null)
-            sm.checkPackageAccess(name);
+        SecurityManager securityManager = System.getSecurityManager();
+        if (securityManager != null)
+            securityManager.checkPackageAccess(name);
     }
 
     ThreadGroup getThreadGroup() {
