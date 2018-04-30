@@ -20,6 +20,13 @@ $ cd signed && gradle copyJarToDirectory && cd ../jar
 $ jarsigner -keystore ~/hello-keystore -storepass hania123 -keypass hania123 signed-1.0-SNAPSHOT.jar hello 
 ```
 
+Verify:
+```
+jarsigner -verify signed-1.0-SNAPSHOT.jar
+```
+`-verbose` option gives more info.
+
+
 --------------
 
 

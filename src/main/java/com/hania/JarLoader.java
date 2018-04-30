@@ -133,7 +133,7 @@ public class JarLoader extends SecureClassLoader {
 
     private void loadClassBytes(JarInputStream jarInputStream, String jarName, JarEntry jarEntry) {
         if (printLoadMessages)
-            LOG.info("Loading byte from: {}", jarName);
+            LOG.info("Loading bytes from: {}", jarName);
         BufferedInputStream jarBuffered = new BufferedInputStream(jarInputStream);
         ByteArrayOutputStream jarOutput = new ByteArrayOutputStream();
         int b;
