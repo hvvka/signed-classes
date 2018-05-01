@@ -20,7 +20,9 @@ public class MainController {
     private JComboBox<String> classesComboBox;
     private JButton encryptButton;
     private JButton decryptButton;
+    private JButton verifyJARButton;
     private JarManager jarManager;
+    private File selectedJar;
 
     public MainController() {
         mainFrame = new MainFrame();
@@ -35,6 +37,7 @@ public class MainController {
         classesComboBox = mainFrame.getClassesComboBox();
         encryptButton = mainFrame.getEncryptButton();
         decryptButton = mainFrame.getDecryptButton();
+        verifyJARButton = mainFrame.getVerifyJARButton();
     }
 
     private void initListeners() {
@@ -42,6 +45,7 @@ public class MainController {
         initSubmit();
         initEncrypt();
         initDecrypt();
+        verifyJARButton.addActionListener(e -> WindowMessages.showCertificate(selectedJar.getAbsolutePath()));
     }
 
     private void initSelectFile() {
@@ -49,10 +53,10 @@ public class MainController {
             JarFileChooser jarFileChooser = new JarFileChooser();
             int returnValue = jarFileChooser.showOpenDialog(null);
             if (returnValue == JFileChooser.APPROVE_OPTION) {
-                File selectedFile = jarFileChooser.getSelectedFile();
-                jarPathTextField.setText(selectedFile.getName());
+                selectedJar = jarFileChooser.getSelectedFile();
+                jarPathTextField.setText(selectedJar.getName());
                 submitButton.setEnabled(true);
-                jarManager = new JarManager(selectedFile.getAbsolutePath());
+                jarManager = new JarManager(selectedJar.getAbsolutePath());
             }
         });
     }

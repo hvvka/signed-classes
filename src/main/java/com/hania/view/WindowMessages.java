@@ -1,5 +1,7 @@
 package com.hania.view;
 
+import com.hania.Jarsigner;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -18,8 +20,29 @@ public class WindowMessages {
         JOptionPane.showMessageDialog(new Frame(), message, title, JOptionPane.INFORMATION_MESSAGE);
     }
 
+    public static void showCertificate(String jarPath) {
+        String title = "Certificate";
+        String message = String.format("<html>%s", Jarsigner.verify(jarPath));
+        JOptionPane optionPane = new NarrowOptionPane();
+        optionPane.setMessage(message);
+        optionPane.setMessageType(JOptionPane.INFORMATION_MESSAGE);
+        JDialog dialog = optionPane.createDialog(null, title);
+        dialog.setVisible(true);
+    }
+
     public enum Base64 {
         ENCRYPTED,
         DECRYPTED
+    }
+}
+
+class NarrowOptionPane extends JOptionPane {
+
+    NarrowOptionPane() {
+    }
+
+    @Override
+    public int getMaxCharactersPerLineCount() {
+        return 100;
     }
 }

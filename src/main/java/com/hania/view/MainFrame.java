@@ -17,6 +17,7 @@ public class MainFrame extends JFrame {
     private JComboBox<String> classesComboBox;
     private JButton encryptButton;
     private JButton decryptButton;
+    private JButton verifyJARButton;
     private JLabel selectClassLabel;
 
     public MainFrame() {
@@ -36,6 +37,7 @@ public class MainFrame extends JFrame {
         classesComboBox.setEnabled(isEnabled);
         encryptButton.setEnabled(isEnabled);
         decryptButton.setEnabled(isEnabled);
+        verifyJARButton.setEnabled(isEnabled);
     }
 
     public JButton getSelectFileButton() {
@@ -60,5 +62,9 @@ public class MainFrame extends JFrame {
 
     public JButton getDecryptButton() {
         return decryptButton;
+    }
+
+    public JButton getVerifyJARButton() {
+        return verifyJARButton;
     }
 }
