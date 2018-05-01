@@ -1,5 +1,7 @@
 # signed-classes
 
+Enables encrypting and decrypting classes from selected jar with base64 encoding.
+
 ## How to create a signed jar?
 
 ### Create keys
@@ -26,19 +28,9 @@ jarsigner -verify signed-1.0-SNAPSHOT.jar
 ```
 `-verbose` option gives more info.
 
+------------
 
---------------
-
-
-### Temat: 
-Wykorzystanie szyfrowania oraz polityki bezpieczeństwa przy ładowaniu klas. 
-
-### Wymagania: 
-Do realizacji zadania potrzebna będzie wiedza o kluczach, cyfrowym podpisywaniem paczek jar, weryfikacji podpisów. 
-
-### Zadanie: 
-Napisz program, który pozwoli użytkownikowi zaszyfrować i rozszyfrować dany plik. Program powinien korzystać z klasy, która została dostarczona w podpisanej cyfrowo paczce jar. Podczas realizacji zadania należy wygenerować klucz prywatny i publiczny. Należy podpisać cyfrowo jar zawierający skompilowane klasy. Należy wykorzystać pliki polityki i zezwolenia (permissions). 
-
-### Materiały: 
-Security Features in Java SE (Oracle) 
-Signed Classes (JavaSecurity)
+TODO
+- [ ] set hellopolicy
+- [ ] signed jar verification on GUI
+- [ ] enable reading encrypted files; cleanup JarManager

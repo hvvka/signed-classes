@@ -13,21 +13,21 @@ import java.util.Base64;
  *
  * @author <a href="mailto:226154@student.pwr.edu.pl">Hanna Grodzicka</a>
  */
-public class ClassEncryptor {
+class ClassEncryptor {
 
     private static final Logger LOG = LoggerFactory.getLogger(ClassEncryptor.class);
 
     private final String jarPath;
 
-    public ClassEncryptor(String jarPath) {
+    ClassEncryptor(String jarPath) {
         this.jarPath = jarPath;
     }
 
-    public void encrypt(String className, byte[] inputBytes) {
+    void encrypt(String className, byte[] inputBytes) {
         saveInputBytes(className, () -> Base64.getEncoder().encode(inputBytes));
     }
 
-    public void decrypt(String className, byte[] inputBytes) {
+    void decrypt(String className, byte[] inputBytes) {
         saveInputBytes(className, () -> Base64.getDecoder().decode(inputBytes));
     }
 
@@ -41,7 +41,6 @@ public class ClassEncryptor {
     private File getTemporaryClassFile(String className) {
         File tempClassFile = null;
         try {
-//            tempClassFile = new File("")
             tempClassFile = File.createTempFile(className, ".class");
         } catch (IOException e) {
             LOG.error("", e);
@@ -50,8 +49,8 @@ public class ClassEncryptor {
         return tempClassFile;
     }
 
-    private void writeTempClassFile(File tmpClassFile, byte[] outputBytes) {
-        try (FileOutputStream fileOutputStream = new FileOutputStream(tmpClassFile)) {
+    private void writeTempClassFile(File tempClassFile, byte[] outputBytes) {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(tempClassFile)) {
             fileOutputStream.write(outputBytes);
         } catch (IOException e) {
             LOG.error("", e);

@@ -28,15 +28,15 @@ public class JarLoader extends SecureClassLoader {
     private static final Logger LOG = LoggerFactory.getLogger(JarLoader.class);
 
     private static int groupNum = 0;
-    private URL urlBase;
-    private URL jarUrl;
+
     private boolean printLoadMessages = true;
 
+    private URL urlBase;
     private Map<String, byte[]> classArrays;
-
     private Map<String, Certificate[]> classIds;
     private ThreadGroup threadGroup;
-    public JarLoader(String base) {
+
+    JarLoader(String base) {
         super();
         try {
             if (!(base.endsWith("/")))
@@ -102,10 +102,11 @@ public class JarLoader extends SecureClassLoader {
         }
     }
 
-    public void readJarFile(String name) {
+    void readJarFile(String name) {
         JarInputStream jarInputStream;
         JarEntry jarEntry;
 
+        URL jarUrl;
         try {
             jarUrl = new URL(urlBase, name);
         } catch (MalformedURLException mue) {
@@ -155,7 +156,7 @@ public class JarLoader extends SecureClassLoader {
         }
     }
 
-    public void checkPackageAccess(String name) {
+    void checkPackageAccess(String name) {
         SecurityManager securityManager = System.getSecurityManager();
         if (securityManager != null)
             securityManager.checkPackageAccess(name);
@@ -171,11 +172,11 @@ public class JarLoader extends SecureClassLoader {
         return urlBase.getHost();
     }
 
-    public List<String> getClassNames() {
+    List<String> getClassNames() {
         return new ArrayList<>(classArrays.keySet());
     }
 
-    public byte[] getClassBytes(String className) {
+    byte[] getClassBytes(String className) {
         return classArrays.get(className);
     }
 }
