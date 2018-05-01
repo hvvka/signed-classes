@@ -23,5 +23,7 @@ public class Runner {
         jarLoader.checkPackageAccess(jarName);
         LOG.info("Class: {}", jarLoader.findClass(helloClassName));
         LOG.info("Class: {}", jarLoader.findClass(emptyClassName));
+
+        LOG.info("Classes: {}", jarLoader.getClassNames());
     }
 }

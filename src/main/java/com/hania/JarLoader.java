@@ -13,7 +13,10 @@ import java.security.CodeSigner;
 import java.security.CodeSource;
 import java.security.SecureClassLoader;
 import java.security.cert.Certificate;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -26,11 +29,13 @@ public class JarLoader extends SecureClassLoader {
 
     private static int groupNum = 0;
     private URL urlBase;
+    private URL jarUrl;
     private boolean printLoadMessages = true;
-    private Hashtable<String, byte[]> classArrays;
-    private Hashtable<String, Certificate[]> classIds;
-    private ThreadGroup threadGroup;
 
+    private Map<String, byte[]> classArrays;
+
+    private Map<String, Certificate[]> classIds;
+    private ThreadGroup threadGroup;
     public JarLoader(String base) {
         super();
         try {
@@ -98,7 +103,6 @@ public class JarLoader extends SecureClassLoader {
     }
 
     public void readJarFile(String name) {
-        URL jarUrl;
         JarInputStream jarInputStream;
         JarEntry jarEntry;
 
@@ -165,5 +169,13 @@ public class JarLoader extends SecureClassLoader {
 
     String getHost() {
         return urlBase.getHost();
+    }
+
+    public List<String> getClassNames() {
+        return new ArrayList<>(classArrays.keySet());
+    }
+
+    public byte[] getClassBytes(String className) {
+        return classArrays.get(className);
     }
 }
