@@ -27,10 +27,3 @@ Verify:
 jarsigner -verify signed-1.0-SNAPSHOT.jar
 ```
 `-verbose` option gives more info.
-
-------------
-
-TODO
-- [ ] set hellopolicy
-- [ ] signed jar verification on GUI
-- [ ] enable reading encrypted files; cleanup JarManager

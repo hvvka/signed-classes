@@ -57,7 +57,6 @@ public class JarManager {
         classEncryptor.decrypt(className, getEncryptedBytes(className + ".class"));
     }
 
-    // todo move to JarLoader
     private byte[] getEncryptedBytes(String className) {
         Map<String, String> env = new HashMap<>();
         env.put("create", "true");
