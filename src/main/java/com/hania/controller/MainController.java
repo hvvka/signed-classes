@@ -21,6 +21,7 @@ public class MainController {
     private JButton encryptButton;
     private JButton decryptButton;
     private JButton verifyJARButton;
+    private JButton showCertificateButton;
     private JarManager jarManager;
     private File selectedJar;
 
@@ -38,6 +39,7 @@ public class MainController {
         encryptButton = mainFrame.getEncryptButton();
         decryptButton = mainFrame.getDecryptButton();
         verifyJARButton = mainFrame.getVerifyJARButton();
+        showCertificateButton = mainFrame.getShowCertificateButton();
     }
 
     private void initListeners() {
@@ -45,7 +47,8 @@ public class MainController {
         initSubmit();
         initEncrypt();
         initDecrypt();
-        verifyJARButton.addActionListener(e -> WindowMessages.showCertificate(selectedJar.getAbsolutePath()));
+        verifyJARButton.addActionListener(e -> WindowMessages.showJarCertificate(selectedJar.getAbsolutePath()));
+        initCertificate();
     }
 
     private void initSelectFile() {
@@ -63,9 +66,18 @@ public class MainController {
 
     private void initSubmit() {
         submitButton.addActionListener(e -> {
-            mainFrame.setEnabledComponents(true);
-            jarManager.getClassNames().forEach(name -> classesComboBox.addItem(name.replace("/", ".")));
+            classesComboBox.removeAllItems();
+            jarManager.getClassNames().forEach(this::checkCertificate);
+            if (classesComboBox.getSelectedItem() != null)
+                mainFrame.setEnabledComponents(true);
+            else
+                verifyJARButton.setEnabled(true);
         });
+    }
+
+    private void checkCertificate(String name) {
+        if (jarManager.getClassIds().get(name).length != 0)
+            classesComboBox.addItem(name.replace("/", "."));
     }
 
     private void initEncrypt() {
@@ -81,6 +93,13 @@ public class MainController {
             String selectedClass = String.valueOf(classesComboBox.getSelectedItem());
             jarManager.decryptClass(selectedClass.replace(".", "/"));
             WindowMessages.showSuccess(selectedClass, WindowMessages.Base64.DECRYPTED);
+        });
+    }
+
+    private void initCertificate() {
+        showCertificateButton.addActionListener(e -> {
+            String selectedClass = String.valueOf(classesComboBox.getSelectedItem()).replace(".", "/");
+            WindowMessages.showClassCertificate(jarManager.getClassIds().get(selectedClass));
         });
     }
 }

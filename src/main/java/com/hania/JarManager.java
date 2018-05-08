@@ -10,6 +10,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.cert.Certificate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,10 @@ public class JarManager {
 
     public List<String> getClassNames() {
         return jarLoader.getClassNames();
+    }
+
+    public Map<String, Certificate[]> getClassIds() {
+        return jarLoader.getClassIds();
     }
 
     public void encryptClass(String className) {

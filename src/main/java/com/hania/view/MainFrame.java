@@ -20,6 +20,8 @@ public class MainFrame extends JFrame {
     private JButton verifyJARButton;
     private JLabel selectClassLabel;
 
+    private JButton showCertificateButton;
+
     public MainFrame() {
         super("Signed classes");
         setSize(WIDTH, HEIGHT);
@@ -38,6 +40,7 @@ public class MainFrame extends JFrame {
         encryptButton.setEnabled(isEnabled);
         decryptButton.setEnabled(isEnabled);
         verifyJARButton.setEnabled(isEnabled);
+        showCertificateButton.setEnabled(isEnabled);
     }
 
     public JButton getSelectFileButton() {
@@ -66,5 +69,9 @@ public class MainFrame extends JFrame {
 
     public JButton getVerifyJARButton() {
         return verifyJARButton;
+    }
+
+    public JButton getShowCertificateButton() {
+        return showCertificateButton;
     }
 }

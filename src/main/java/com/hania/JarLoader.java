@@ -147,10 +147,10 @@ public class JarLoader extends SecureClassLoader {
                 jarOutput.write(b);
             String className = jarName.substring(0, jarName.length() - 6);
             classArrays.put(className, jarOutput.toByteArray());
-            Certificate[] c = jarEntry.getCertificates();
-            if (c == null)
-                c = new Certificate[0];
-            classIds.put(className, c);
+            Certificate[] certificates = jarEntry.getCertificates();
+            if (certificates == null)
+                certificates = new Certificate[0];
+            classIds.put(className, certificates);
         } catch (IOException e) {
             LOG.error("Error reading entry: {}", jarName);
         }
@@ -174,6 +174,10 @@ public class JarLoader extends SecureClassLoader {
 
     List<String> getClassNames() {
         return new ArrayList<>(classArrays.keySet());
+    }
+
+    Map<String, Certificate[]> getClassIds() {
+        return classIds;
     }
 
     byte[] getClassBytes(String className) {
